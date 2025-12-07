@@ -6,49 +6,46 @@ Home assistant - electricity (eg Ellevio) consumption daily peaks per month calc
 
 ## purpose
 the purpose of this is to roughly right determine the daily average power peaks per month as used in Sweden (and other places maybe including Beligium?, Netherlands?). I used the method defined by Ellevio in Sweden here: 
-https://www.ellevio.se/abonnemang/ny-prismodell-baserad-pa-effekt/
-(previously I called this code by Ellevio but have renamed it to a general name EPPMA and did some serious refactoring (beware)) 
+https://www.ellevio.se/abonnemang/ny-prismodell-baserad-pa-effekt/ 
 
-The hope is to ultimately use this for load shedding / balancing / planning by being able to set a maximum allowed energy use each hour (based on the usage peaks and prices) to keep the peaks and prices lower.
+I use this successfully for simple load shedding / balancing / planning by being able to set a maximum allowed energy use each hour (based on the usage peaks and prices) to keep the peaks and prices lower.
 
-After a few days, the data collection is all now seemingly working pretty well.
+graphically an early example in apex charts it is looking like this for checking/debug (previously):
+<img src="/images/eppma_apex_0.png" width="400" />
 
-graphically in apex charts it is looking like this for checking/debug (previously):
-![image|485x500, 50%](upload://dxdMdgDrPSEHhZSh4WYuYqXhoCZ.png) 
 latest albeit without much data at the moment as I just cleared things in the update(s):
-![image|588x500](upload://nTduWyfATzzgKaTHaizr0mKJTlJ.png)
+<img src="/images/eppma_apex_1.png" width="400" />
 
 
-It is quite a few steps and  I am using Apex to present it so far. It has recovered well with various hiccups and I have now (230521) checked this vs Ellevio in detail and it has been preforming well but it will not be 100% as the import data I have is not 100%, again the idea is to get roughly right.
-if you want to try have a look, see below install and process to understand
+After now months since mar 2025, the data collection is all working well! It recovers well with various hiccups and I have now checked this vs Ellevio in detail and it has been preforming well BUT it will not be 100% as the import data I have is not 100%, again the idea is to get roughly right.
 
 ## help, advice, tips, improvements?
-I am guessing as I am not so great at jinja/yaml that there are some improvements to be made here, some things I have identified   :upside_down_face:  some things I see you can find in the open issues in the TODO section of the header
+I am guessing, as I am not so great at jinja/yaml that there are some improvements to be made here, some things I have identified  :upside_down_face:  you can find in the open issues in the TODO section of the header of the code. Best place is likely here in the github now to provide such feedback, but I will updated/check the forum as well when I can.
 
-
-
-# give it a try!
+# Instructions - How to configure it!
 
 ## pre-requisites 
-import power is needed and as it comes in it is integrated to kWh.. if you have it already in kWh in a good enough time period you should be able to just put it into step 3! Mine did not run so often so I went to import power.
+"import power" (W) as a sensor is needed and as it comes in it is integrated to kWh.. if you have it already in kWh in a good enough time period you should be able to just put it into step 3! Mine did not run so often so I went to import power.
 
-## NOTES
-see notes in code incl process flow and TODOs (improvements?)
 
 ## configuration/install instructions
-#### 1. (of 4) put in the line in your configuration.yaml:
+>NOTE: there are more explanations and notes incl TODOs in the code itself.
+
+#### 1. put the following line in your configuration.yaml in the appropriate place (you can change directory but you need to change it the configuration.yaml appropriately):
 
 ```
 homeassistant:  
     packages:
       eppma_energy_peaks_per_month_average: !include packages/eppma_energy_peaks_per_ month_average.yaml
 ```
-#### 2a. (of 4) put the package in your package directory "package" with the name described in yaml (you can change director but you need to change it the config.yaml above) "eppma_energy_peaks_per_ month_average.yaml"
-#### 2b. apex charts - if using, load the code found at the bottom [Apex code](#Apex code)
-#### 3. after 5-10min check values in eppma_1 & 2 after a few moments (so long as you are importing data you will see something)
-#### 4. after 1st hour check values in eppma_3 & _4 for previous hour
-#### 5. after 1st day after 00:00 check eppma_5 & _6  and even 7 for previous day
-#### 6. after 1st of month after 00:00ish check eppma _8 for result from previous month
+
+#### 2a. place the EPPMA [yaml code](eppma_energy_peaks_per_month_average.yaml) in your package directory "packages" with the name given: "eppma_energy_peaks_per_ month_average.yaml"
+#### 2b. apex charts - if using, create a dashboard panel and fill it with the code [Apex code](#apex-code), alternatively check out the sensors in order and prefixed with EPPMA then the number, eg eppma_2.. or "EPPMA 2.."
+#### 3. restart home assistant
+#### 4. after 5-10min check values in eppma_1 & 2 should fill after a few moments (so long as you are importing data you will see something)
+#### 5. after 1st hour check values in eppma_3 & _4 for previous hours values
+#### 6. after 1st day after 00:00 check eppma_5 & _6  and even 7 for previous days values
+#### 7. after 1st of month after 00:00ish check eppma _8 for result from previous month
 
 --- 
 
